@@ -1,0 +1,63 @@
+input :: 1. name-joltSpec type-String
+         2. name-jsonIN type-Json
+         3. name-logIt  type-boolean 
+
+Output :: transformedJson , type-json 
+
+
+
+@Grab(group="com.fasterxml.jackson.core", module="jackson-databind", version="2.15.2")
+@Grab(group="com.bazaarvoice.jolt", module="jolt-core", version="0.1.8")
+@Grab(group="com.bazaarvoice.jolt", module="json-utils", version="0.1.8")
+@Grab(group="commons-codec", module="commons-codec", version="1.9")
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.bazaarvoice.jolt.Chainr;
+import com.bazaarvoice.jolt.JsonUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+Logger log = LoggerFactory.getLogger(getClass());
+
+log.info("@@@ opEx_SLC_Service_JSON_Transform_Utility> JSON_to_JSON_Transform  START============================>>>>>" );
+
+/*
+// Your JSON data
+def jsonInStr = "{\"caseId\":52,\"JEQ\":{\"JEQ\":{\"Factor_1\":{\"DM\":{\"Q1\":\"4\",\"exp\":\"dsa\"}},\"Factor_2\":{\"Factor_2A\":{\"DM\":{\"Q2\":\"4\",\"Q3_1\":[],\"Q3_2\":[\"R\"],\"Q3_4\":[],\"Q3_6\":[\"F\"],\"Q3_7\":[],\"Q3_8\":[],\"Q3_9\":[],\"Q3_3a\":[\"F\"],\"Q3_3b\":[\"F\"],\"Q3_5a\":[],\"Q3_5b\":[],\"Q3_5c\":[]},\"isEdited\":false},\"Factor_2B\":{\"DM\":{\"Q4_2\":[\"F\"],\"Q4_3\":[],\"Q4_4\":[\"F\"],\"Q4_6\":[],\"Q4_8\":[],\"Q4_9\":[],\"Q4_1a\":[\"O\"],\"Q4_1b\":[],\"Q4_5a\":[],\"Q4_5b\":[],\"Q4_7a\":[],\"Q4_7b\":[]},\"isEdited\":false},\"Factor_2C\":{\"DM\":{\"Q5\":\"YES\",\"Q6\":[{\"why\":\"ddsa\",\"Q6_2a\":[\"F\"],\"Q6_2b\":[],\"Q6_2c\":[],\"Q6_3a\":[\"R\"],\"Q6_3b\":[\"F\"],\"Q6_3c\":[\"R\"],\"Q6_4a\":[],\"Q6_4b\":[],\"Q6_4c\":[],\"language\":\"Hebrew\"}],\"exp\":\"dsadas\"},\"isEdited\":false}},\"Factor_3\":{\"DM\":{\"Q7\":\"5\",\"exp\":\"dsada\"},\"isEdited\":false},\"Factor_4\":{\"DM\":{\"exp\":\"dsadas\",\"Q8_L1\":[],\"Q8_L2\":[\"3a\",\"3b\",\"3c\",\"3d\",\"3f\"],\"Q8_L3\":[\"4\"],\"Q8_L4\":[\"5e\",\"5h\",\"5g\",\"5f\"],\"Q8_L5\":[\"6\"],\"Q8_L6\":[\"7b\",\"7d\",\"7c\",\"7e\"],\"Q8_L7\":[\"8\"],\"Q8_L8\":[\"9\"]},\"isEdited\":false},\"Factor_5\":{\"DM\":{\"Q9\":\"4\",\"exp\":\"dsadsa\",\"openPopUp\":true},\"isEdited\":false},\"Factor_6\":{\"DM\":{\"Q10\":\"4\",\"exp\":\"dwq ecv\"},\"isEdited\":false},\"Factor_7\":{\"DM\":{\"Q11\":\"4\",\"exp\":\"few\",\"time\":\"4 months\",\"people\":23,\"occasion\":\"every occasions\"},\"INC\":{\"people\":null},\"isEdited\":false},\"Factor_8\":{\"Factor_8A\":{\"DM\":{\"exp\":\"fewf\",\"Q12_3b\":\"dfew\",\"Q12_3d\":\"few\",\"Q12_L1\":[\"1\",\"2\"],\"Q12_L2\":[\"3a\",\"3b\"],\"Q12_L3\":[\"3c\",\"3d\"],\"Q12_L4\":[],\"Q12_L5\":[\"4\"],\"Q12_L6\":[],\"Q12_L7\":[\"5b\",\"7a\",\"7b\"]},\"isEdited\":false},\"Factor_8B\":{\"isEdited\":false}},\"submissionType\":\"N/A\"}}}"
+
+
+// JOLT Transformation Specification
+def joltSpec = "[{\"operation\":\"shift\",\"spec\":{\"caseId\":\"caseId\",\"JEQ\":{\"JEQ\":{\"Factor_1\":{\"DM\":\"JEQ.JEQ.Factor_1.INC\",\"*\":\"JEQ.JEQ.Factor_1.&\"},\"Factor_2\":{\"Factor_2A\":{\"DM\":\"JEQ.JEQ.Factor_2.Factor_2A.INC\",\"*\":\"JEQ.JEQ.Factor_2.Factor_2A.&\"},\"Factor_2B\":{\"DM\":\"JEQ.JEQ.Factor_2.Factor_2B.INC\",\"*\":\"JEQ.JEQ.Factor_2.Factor_2B.&\"},\"Factor_2C\":{\"DM\":\"JEQ.JEQ.Factor_2.Factor_2C.INC\",\"*\":\"JEQ.JEQ.Factor_2.Factor_2C.&\"},\"*\":\"JEQ.JEQ.Factor_2.&\"},\"Factor_3\":{\"DM\":\"JEQ.JEQ.Factor_3.INC\",\"*\":\"JEQ.JEQ.Factor_3.&\"},\"Factor_4\":{\"DM\":\"JEQ.JEQ.Factor_4.INC\",\"*\":\"JEQ.JEQ.Factor_4.&\"},\"Factor_5\":{\"DM\":\"JEQ.JEQ.Factor_5.INC\",\"*\":\"JEQ.JEQ.Factor_5.&\"},\"Factor_6\":{\"DM\":\"JEQ.JEQ.Factor_6.INC\",\"*\":\"JEQ.JEQ.Factor_6.&\"},\"Factor_7\":{\"DM\":\"JEQ.JEQ.Factor_7.INC\",\"*\":\"JEQ.JEQ.Factor_7.&\"},\"Factor_8\":{\"Factor_8A\":{\"DM\":\"JEQ.JEQ.Factor_8.Factor_8A.INC\",\"*\":\"JEQ.JEQ.Factor_8.Factor_8A.&\"},\"Factor_8B\":{\"DM\":\"JEQ.JEQ.Factor_8.Factor_8B.INC\",\"*\":\"JEQ.JEQ.Factor_8.Factor_8B.&\"},\"*\":\"JEQ.JEQ.Factor_8.&\"},\"submissionType\":\"JEQ.JEQ.&\"}}}}]"
+*/
+
+// Use JOLT to flatten the JSON data
+// Parse JSON using Jackson
+
+log.info("@@@ logIt = " + logIt);
+
+if (logIt) log.info("@@@ jsonIN is Null = " + jsonIN.isNull());
+def mapper = new ObjectMapper();
+String jsonInStr = mapper.writeValueAsString(jsonIN);
+if (logIt) log.info("@@@ jsonInStr = " + jsonInStr);
+
+if (logIt) log.info("@@@ joltSpec = " + joltSpec);
+if (logIt) log.info("@@@ joltSpec getClass = " + joltSpec.getClass());
+List<Object> transformSpec =JsonUtils.jsonToList(joltSpec);
+Object inputJSON = JsonUtils.jsonToObject(jsonInStr);
+
+if (logIt) log.info("@@@ transformSpec = " + transformSpec);
+def flattenedJson = Chainr.fromSpec(transformSpec).transform(inputJSON);
+String output = JsonUtils.toJsonString(flattenedJson);
+
+if (logIt) log.info("@@@ inputJSON =  " + inputJSON);
+if (logIt) log.info("@@@ output = " + output);
+
+
+log.info("@@@ flattenedJson= " + flattenedJson);
+log.info("@@@ transformedJson= " + output);
+
+
+log.info("@@@ opEx_SLC_Service_JSON_Transform_Utility> JSON_to_JSON_Transform  END============================" );
+
+flw.setOutput('flattenedJson', flattenedJson);
+flw.setOutput('transformedJson', output);
