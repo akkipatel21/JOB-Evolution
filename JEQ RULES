@@ -1,0 +1,14 @@
+1. {{root.jeqRes}}
+{{flw.JSON.parse('{"isVisible":' + (case.type == "sigChange" ? true:false) + ', "isEditable":' + (incumbent.pyId == currentUser.id) + ', "isIgnored":false}')}}
+
+2. {{root.mgmtResp}}
+{{flw.JSON.parse('{"isVisible":' + ((case.type=="revisedVacant" || case.type=="new") || (case.submissionType=="individual" && (dm.pyId==currentUser.id || jeConsultant.pyId==currentUser.id || isIncEnabled==true))) + ', "isEditable":' + (dm.pyId == currentUser.id) + ', "isIgnored":false}')}}
+
+3.{{root.SupportComm}}
+{{flw.JSON.parse('{"isVisible":' + ((dm.pyId == $currentUser.id && flw.exists(jecCmt)) || jeConsultant.pyId == $currentUser.id) + ', "isEditable":' + (jeConsultant.pyId==currentUser.id) + ', "isIgnored":false}')}}
+
+4.{{root.reqModify}}
+{{flw.JSON.parse('{"isVisible":' + (case.type != "new")  + ', "isEditable":' + ((incumbent.pyId == currentUser.id) && isIncEnabled) + ', "isIgnored":false}')}}
+
+5.{{root.mgmtAgree}}
+{{flw.JSON.parse('{"isVisible":' + ((case.submissionType=="individual") && (dm.pyId==currentUser.id || jeConsultant.pyId == currentUser.id)) + ', "isEditable":' + ((case.submissionType=="individual") && (dm.pyId==currentUser.id)) + ', "isIgnored":false}')}}
