@@ -1,0 +1,61 @@
+//Old buttons on JEQ
+
+Change Submission Type to Individual
+individual
+visible - {{$payload.case.submissionType=="joint" && $payload.jeqObjs.jeConsultant.pyId != $currentUser.id && $payload.case.type=="sigChange" && !isChangeRequest}}
+
+
+Submit To DM For Review
+Submit To DM For Review
+{{$payload.case.submissionType=="joint" && $payload.jeqObjs.incumbent.pyId == $currentUser.id && !isChangeRequest}}
+
+
+Submit To DM
+SubmitToDm
+{{$payload.jeqObjs.jeConsultant.pyId == $currentUser.id && !isChangeRequest}}
+
+Incumbent Review
+Incumbent Review	
+{{$payload.case.submissionType=="joint" && $payload.jeqObjs.dm.pyId == $currentUser.id && $payload.case.type=="sigChange" && !isChangeRequest}}
+
+
+Request JE Consultant Review
+Request JE Consultant Review
+{{$payload.jeqObjs.dm.pyId == $currentUser.id && !isChangeRequest}}
+
+
+Submit
+submit
+{{(!isChangeRequest) && ($payload.case.submissionType=="joint" && $payload.jeqObjs.dm.pyId == $currentUser.id) || ($payload.case.submissionType=="individual" && $payload.jeqObjs.incumbent.pyId == $currentUser.id && $payload.isIncEnabled==true) || ($payload.case.type=="new_revisedVacant" && $payload.jeqObjs.dm.pyId == $currentUser.id)}}
+
+
+Submit
+submitIndividualByDm
+{{$payload.case.submissionType=="individual" && $payload.jeqObjs.dm.pyId == $currentUser.id && $payload.case.type=="sigChange" && !isChangeRequest}}
+
+Submit
+Submit To DM For Review
+{{$payload.case.submissionType=="individual" && $payload.jeqObjs.incumbent.pyId == $currentUser.id && $payload.isIncEnabled != true && !isChangeRequest}}
+
+Submit
+submit
+{{($payload.case.type!="sigChange" && $payload.jeqObjs.dm.pyId == $currentUser.id && !isChangeRequest)}}
+
+
+Approve
+joint
+{{isChangeRequest && dmDecision=="Yes"}}
+{{dmDecision=="Yes"}}
+
+
+Reject
+individual
+{{isChangeRequest && dmDecision=="No"}}
+{{dmDecision=="No"}}
+
+JEQ:: ${vars:equals(form_jECS_112_Form_JEQ_outcome, "Incumbent Review") || vars:equals(form_jECS_112_Form_JEQ_outcome, "submitIndividualByDm")  || vars:equals(root.jeqEntry, true)}
+DM::  ${vars:equals(form_jECS_112_Form_JEQ_outcome, "Submit To DM For Review") || vars:equals(form_jECS_112_Form_JEQ_outcome, "SubmitToDm")}
+JEC :: ${vars:equals(form_jECS_112_Form_JEQ_outcome, "Request JE Consultant Review")}
+Save:: ${vars:equals(form_jECS_112_Form_JEQ_outcome, "submit") && (vars:equals(routingPath, "sigChange_joint") || vars:equals( routingPath, "sigChange_individual"))}
+
+ || vars:equals(root.jeqEntry, true)}
