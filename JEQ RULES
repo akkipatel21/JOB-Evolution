@@ -1,7 +1,6 @@
 
 
 ;!
-
 1. {{root.jeqRes}}
 {{flw.JSON.parse('{"isVisible":' + (case.type == "sigChange" ? true:false) + ', "isEditable":' + (incumbent.pyId == currentUser.id) + ', "isIgnored":false}')}}
 
